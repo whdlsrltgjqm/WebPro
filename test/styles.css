@@ -1,0 +1,215 @@
+/* 기본 */
+:root {
+  --main-bg-color: #ffffff;
+  --main-text-color: #000000;
+  --card-opacity: 0.5;
+  --card-scale: 0.8;
+  --card-active-scale: 1.3;
+  --card-transition: 0.3s;
+}
+
+/* 바디 */
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--main-bg-color);
+  color: black;
+  margin: 0;
+  padding: 0;
+}
+
+/* 숨김 */
+.hidden {
+  display: none !important;
+}
+
+/* 시작 화면 */
+#startScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.9); /* 배경색과 투명도 설정 */
+}
+
+#startScreen h1 {
+  font-size: 3em;
+  margin-bottom: 0.5em;
+}
+
+#startScreen p {
+  font-size: 1.2em;
+  opacity: 0.7;
+}
+
+/* 게임 선택 화면 */
+#game-list {
+  margin-top: 60px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 탑바*/
+.top-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--main-bg-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 10px 20px;
+}
+
+.top-bar h1 {
+  flex-grow: 1;
+  text-align: center;
+  margin: 0;
+}
+
+#money-display {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+#soundIcon {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+#money-display img,
+#soundIcon img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+/* 게임 카드 */
+.carousel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2em;
+  overflow: hidden;
+  width: 100vw;
+  height: 60vh;
+  position: relative;
+  margin-top: 30vh; /* 원하는 만큼 아래로 내리기 위해 margin-top 추가 */
+}
+
+.game-card {
+  flex: 0 0 220px;
+  height: 300px;
+  text-align: center;
+  opacity: var(--card-opacity);
+  transform: scale(var(--card-scale));
+  transition: transform var(--card-transition), opacity var(--card-transition);
+  color: var(--main-text-color);
+  position: absolute;
+}
+
+.game-card.active {
+  opacity: 1;
+  transform: scale(var(--card-active-scale));
+  transition: transform var(--card-transition), opacity var(--card-transition);
+}
+
+.game-card.left {
+  transform: translateX(-220px) scale(var(--card-scale));
+  opacity: var(--card-opacity);
+}
+
+.game-card.right {
+  transform: translateX(220px) scale(var(--card-scale));
+  opacity: var(--card-opacity);
+}
+
+/* 게임 베팅 화면 */
+#betting-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#horse-info {
+  margin: 20px 0;
+}
+
+#horse-image {
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+}
+
+.betting-controls {
+  margin: 20px 0;
+}
+
+.betting-controls label {
+  margin-right: 10px;
+}
+
+.betting-controls input {
+  margin-right: 20px;
+}
+
+/* 경주 화면 */
+.track {
+  position: relative;
+  width: 90%;
+  height: 300px;
+  margin: 20px auto;
+  border: 2px solid black;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.horse {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-image: url('https://via.placeholder.com/50'); /* 임시 이미지 */
+  background-size: cover;
+  top: 0;
+}
+
+.controls {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.controls button {
+  margin: 5px;
+}
+
+#results {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.progress-display {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: var(--main-bg-color);
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+}
