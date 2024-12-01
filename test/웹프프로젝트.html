@@ -19,7 +19,7 @@
         <div class="top-bar">
             <div id="money-display"> <!-- 돈 표시 -->
                 <img src="https://via.placeholder.com/30" alt="Money Icon">
-                <p id="money">100000</p>
+                <p id="money">5000</p>
             </div>
             <h1>게임 선택</h1>
             <div id="soundIcon"> <!-- 사운드 관련 아이콘 -->
@@ -43,6 +43,24 @@
             </div>
         </div>
     </div>
+
+    <!-- 탄막게임 화면 -->
+    <div id="bullet-container" class="hidden">
+        <canvas id="gameCanvas"></canvas>
+        <div id="gameOverScreen" class="hidden">
+            <h1>Game Over</h1>
+            <p id="finalScore"></p>
+            <button id="restartButton">Restart</button>
+        </div>
+    </div>
+
+    <!-- 반응속도 게임 화면 -->
+    <div id="reaction-container" class="hidden">
+        <div id="reaction-message">임시 준비</div>
+        <img id="reaction-target" src="target.png" alt="Target" style="display: none;">
+        <div id="reaction-speed" style="display: none;"></div>
+        <button id="reaction-button" style="display: none;">Play Again</button>
+      </div>
 
     <!-- 베팅 화면 -->
     <div id="betting-container" class="hidden">
