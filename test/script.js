@@ -7,9 +7,13 @@ const gameList = document.getElementById('gameList');
 const money = document.getElementById('money');
 const carousel = document.querySelector('.carousel');
 const gameCards = Array.from(document.querySelectorAll('.game-card'));
+const game1 = document.getElementById('game1');
+const game2 = document.getElementById('game2');
 const game3 = document.getElementById('game3');
 const soundIcon = document.getElementById('soundIcon');
 const soundImage = document.getElementById('soundImage');
+const bulletcontainer = document.getElementById('bullet-container');
+const reactioncontainer = document.getElementById('reaction-container');
 const startButton = document.getElementById('start-button');
 const resultsScreen = document.getElementById('results');
 const resultsList = document.getElementById('results-list');
@@ -75,6 +79,19 @@ soundIcon.addEventListener('click', () => {
 
 // 창 크기 조정 시 캐러셀 업데이트
 window.addEventListener('resize', updateCarousel);
+
+// 게임 1 클릭 시 게임 1 화면으로 전환
+game1.addEventListener('click', () => {
+    gameList.classList.add('hidden');
+    bulletcontainer.classList.remove('hidden');
+    gameLoop();
+});
+
+// 게임 2 클릭 시 게임 2 화면으로 전환
+game2.addEventListener('click', () => {
+    gameList.classList.add('hidden');
+    reactioncontainer.classList.remove('hidden');
+});
 
 // 게임 3 클릭 시 게임 3 화면으로 전환
 game3.addEventListener('click', () => {
@@ -266,3 +283,178 @@ restartButton.addEventListener('click', () => {
 initHorses();
 displayHorseInfo(currentHorseIndex);
 updateCarousel();
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const gameOverScreen = document.getElementById('gameOverScreen');
+const finalScore = document.getElementById('finalScore');
+const restartbutton = document.getElementById('restartButton');
+
+// 캔버스 크기 설정
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// 게임 상태 변수
+let player = { x: canvas.width / 2, y: canvas.height - 50, width: 20, height: 20, color: 'white' };
+let enemies = [];
+let isGameOver = false;
+let score = 0;
+
+// 플레이어 움직임
+let keys = {};
+window.addEventListener('keydown', (e) => keys[e.key] = true);
+window.addEventListener('keyup', (e) => keys[e.key] = false);
+
+// 플레이어 업데이트
+function updatePlayer() {
+    if (keys['ArrowLeft'] && player.x > 0) player.x -= 5;
+    if (keys['ArrowRight'] && player.x + player.width < canvas.width) player.x += 5;
+}
+
+// 적 업데이트
+function updateEnemies() {
+    const spawnRate = Math.min(0.05 + score * 0.0001, 0.5); // 점수가 높아질수록 적 생성 빈도 증가
+    const enemySpeed = 2 + score * 0.01; // 점수가 높아질수록 적 속도 증가
+
+    if (Math.random() < spawnRate) {
+        enemies.push({ x: Math.random() * canvas.width, y: 0, width: 20, height: 20, color: 'green', speed: enemySpeed });
+    }
+    enemies.forEach((enemy, index) => {
+        enemy.y += enemy.speed;
+        if (enemy.y > canvas.height) enemies.splice(index, 1);
+    });
+}
+
+// 충돌 감지
+function detectCollisions() {
+    enemies.forEach((enemy, eIndex) => {
+        if (
+            player.x < enemy.x + enemy.width &&
+            player.x + player.width > enemy.x &&
+            player.y < enemy.y + enemy.height &&
+            player.y + player.height > enemy.y
+        ) {
+            isGameOver = true;
+            showGameOver();
+        }
+    });
+}
+
+// 게임 오버 메시지 표시
+function showGameOver() {
+    finalScore.textContent = `Get money: ${score}`;
+    money.textContent = parseInt(money.textContent) + score;
+    gameOverScreen.classList.remove('hidden');
+}
+
+// 그리기 함수
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = player.color;
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    enemies.forEach((enemy) => {
+        ctx.fillStyle = enemy.color;
+        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+    });
+
+    // 점수 표시
+    ctx.fillStyle = 'white';
+    ctx.font = '24px serif';
+    ctx.fillText(`Score: ${score}`, 10, 30);
+}
+
+// 게임 루프
+function gameLoop() {
+    if (isGameOver) return;
+    updatePlayer();
+    updateEnemies();
+    detectCollisions();
+    draw();
+    score++;
+    requestAnimationFrame(gameLoop);
+}
+
+// 게임 재시작
+restartbutton.addEventListener('click', () => {
+    gameOverScreen.classList.add('hidden');
+    player = { x: canvas.width / 2, y: canvas.height - 50, width: 20, height: 20, color: 'white' };
+    enemies = [];
+    isGameOver = false;
+    score = 0;
+
+    bulletcontainer.classList.add('hidden');
+    gameList.classList.remove('hidden');
+});
+
+let reactionTimes = [];
+let startTime = 0;
+let round = 0;
+const totalRounds = 5;
+
+const messageEl = document.getElementById('reaction-message');
+const targetImageEl = document.getElementById('reaction-target');
+const resultEl = document.getElementById('reaction-speed');
+const actionButtonEl = document.getElementById('reaction-button');
+
+function showTarget() {
+  const delay = Math.random() * 2000 + 1000; // Random delay between 1-3 seconds
+  setTimeout(() => {
+    startTime = Date.now();
+    targetImageEl.style.display = 'block';
+    messageEl.textContent = 'Click!';
+  }, delay);
+}
+
+function startGame() {
+  reactionTimes = [];
+  round = 0;
+  resultEl.style.display = 'none';
+  actionButtonEl.style.display = 'none';
+  nextRound();
+}
+
+function nextRound() {
+  if (round < totalRounds) {
+    round++;
+    messageEl.textContent = `Round ${round}: Get ready...`;
+    targetImageEl.style.display = 'none';
+    showTarget();
+  } else {
+    endGame();
+  }
+}
+
+function handleTargetClick() {
+  const reactionTime = Date.now() - startTime;
+  reactionTimes.push(reactionTime);
+  messageEl.textContent = `Reaction time: ${reactionTime} ms`;
+  targetImageEl.style.display = 'none';
+  setTimeout(nextRound, 1000);
+}
+
+function endGame() {
+  const averageTime =
+    reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+  messageEl.textContent = `평균 반응 속도: ${averageTime.toFixed(2)} ms`;
+  if (averageTime < 270) {
+        money.textContent = parseInt(money.textContent) + 1000;
+        resultEl.textContent = `얻은 돈: 500`;
+    } else {
+        money.textContent = parseInt(money.textContent) + 500;
+        resultEl.textContent = `얻은 돈: 500`;
+    }
+
+  resultEl.style.display = 'block';
+  actionButtonEl.style.display = 'block';
+}
+
+targetImageEl.addEventListener('click', handleTargetClick);
+actionButtonEl.addEventListener('click', () => {
+    startGame();
+    reactioncontainer.classList.add('hidden');
+    gameList.classList.remove('hidden');
+    });
+    
+
+startGame();
