@@ -49,7 +49,7 @@ body {
 }
 
 /* 게임 선택 화면 */
-#game-list {
+#gameList {
   margin-top: 60px;
   position: absolute;
   top: 0;
@@ -62,7 +62,7 @@ body {
   height: 100%;
 }
 
-/* 탑바*/
+/* 탑바 */
 .top-bar {
   width: 100%;
   display: flex;
@@ -73,7 +73,6 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  padding: 10px 20px;
 }
 
 .top-bar h1 {
@@ -88,18 +87,89 @@ body {
   cursor: pointer;
 }
 
-#soundIcon {
+#optionIcon,
+#shopIcon {
   display: flex;
   align-items: center;
   cursor: pointer;
+  margin-left: 10px; /* 옵션 버튼과 상점 버튼 사이의 간격 */
 }
 
 #money-display img,
-#soundIcon img {
+#optionIcon img,
+#shopIcon img {
   width: 30px;
   height: 30px;
   border-radius: 50%;
   margin-right: 10px;
+}
+
+/* 옵션 화면 */
+#optionScreen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+}
+
+#optionScreen h2 {
+  margin-top: 0;
+}
+
+.option {
+  margin: 20px 0;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(14px);
 }
 
 /* 게임 카드 */
@@ -126,18 +196,27 @@ body {
   position: absolute;
 }
 
+.game-card img {
+  width: var(--card-scale, 100%); /* 너비 설정 */
+  height: var(--card-height, 80%); /* 높이 설정 */
+  object-fit: cover;
+}
+
 .game-card.active {
   opacity: 1;
+  z-index: 1;
   transform: scale(var(--card-active-scale));
   transition: transform var(--card-transition), opacity var(--card-transition);
 }
 
 .game-card.left {
+  z-index: 0.2;
   transform: translateX(-220px) scale(var(--card-scale));
   opacity: var(--card-opacity);
 }
 
 .game-card.right {
+  z-index: 0.2;
   transform: translateX(220px) scale(var(--card-scale));
   opacity: var(--card-opacity);
 }
@@ -240,8 +319,8 @@ canvas {
   position: absolute;
   width: 50px;
   height: 50px;
-  background-image: url('https://via.placeholder.com/50'); /* 임시 이미지 */
-  background-size: cover;
+  background-color: brown; /* 기본 색상 */
+  border-radius: 50%; /* 원형으로 만들기 */
   top: 0;
 }
 
@@ -268,4 +347,37 @@ canvas {
   padding: 2px 5px;
   border-radius: 3px;
   font-size: 12px;
+}
+
+/* 상점 화면 */
+#shopScreen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+}
+
+#slotMachine {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.slot {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 10px;
 }

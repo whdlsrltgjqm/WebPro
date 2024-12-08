@@ -9,7 +9,7 @@
 <body>
     <!-- 시작 화면 -->
     <div id="startScreen">
-        <h1>Temp name</h1>
+        <h1>Getting Money Simulator</h1>
         <p>화면 클릭으로 진행</p>
     </div>
 
@@ -18,19 +18,40 @@
         <!-- 상단 바 -->
         <div class="top-bar">
             <div id="money-display"> <!-- 돈 표시 -->
-                <img src="https://via.placeholder.com/30" alt="Money Icon">
+                <img src="돈.png" alt="Money Icon">
                 <p id="money">5000</p>
             </div>
             <h1>게임 선택</h1>
-            <div id="soundIcon"> <!-- 사운드 관련 아이콘 -->
-                <img src="https://img.icons8.com/ios/50/000000/high-volume--v1.png" alt="Sound Control" id="soundImage">
+
+            <div id="optionIcon"> <!-- 옵션 버튼 -->
+                <img src="옵션.png" alt="Option Icon">
             </div>
+            
+            <div id="shopIcon"> <!-- 상점 버튼 -->
+                <img src="상점.png" alt="Shop Icon">
+            </div>
+        </div>
+
+        <div id="optionScreen" class="hidden"> <!-- 사운드 관련 화면 -->
+            <h2>사운드 설정</h2>
+            <div class="option"> <!-- 사운드 on/off -->
+                <p>사운드</p>
+                <label class="switch">
+                    <input type="checkbox" id="soundToggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="option"> <!-- 사운드 볼륨 -->
+                <p>볼륨</p>
+                <input type="range" id="volume" min="0" max="100">
+            </div>
+            <button id="closeOption">닫기</button>
         </div>
 
         <!-- 게임 선택 카드 -->
         <div class="carousel"> 
             <div id="game1" class="game-card"> <!-- 게임 1 -->
-                <img src="https://via.placeholder.com/150" alt="Placeholder image for Game 1">
+                <img src="총알 대문.jpg" alt="Placeholder image for Game 1">
                 <h2>탄막 게임</h2>
             </div>
             <div id="game2" class="game-card"> <!-- 게임 2 -->
@@ -38,7 +59,7 @@
                 <h2>반응속도 게임</h2>
             </div>
             <div id="game3" class="game-card"> <!-- 게임 3 -->
-                <img src="https://via.placeholder.com/150" alt="Placeholder image for Game 3">
+                <img src="경마대문.jpg" alt="경마게임">
                 <h2>경마 게임</h2>
             </div>
         </div>
@@ -60,7 +81,7 @@
         <img id="reaction-target" src="target.png" alt="Target" style="display: none;">
         <div id="reaction-speed" style="display: none;"></div>
         <button id="reaction-button" style="display: none;">Play Again</button>
-      </div>
+    </div>
 
     <!-- 베팅 화면 -->
     <div id="betting-container" class="hidden">
@@ -78,7 +99,7 @@
         </div>
         <div class="betting-controls"> <!-- 베팅 관련 버튼 -->
             <label for="betting-value">베팅 금액:</label>
-            <input type="number" id="betting-value" min="0">
+            <input type="text" id="betting-value" min="0">
             <label for="betting-horse">말 번호:</label>
             <input type="number" id="betting-horse" min="1" max="8">
             <button id="place-bet">베팅하기</button>
@@ -98,6 +119,19 @@
             <img id="restart-button" src="https://via.placeholder.com/100x50?text=Restart" alt="다시 시작 버튼">
         </div>
     </div>
+
+    <div id="shopScreen" class="hidden">
+        <h2>상점</h2>
+        <div id="slotMachine">
+            <div class="slot" id="slot1">00</div>
+            <div class="slot" id="slot2">00</div>
+            <div class="slot" id="slot3">00</div>
+        </div>
+        <button id="spinButton">회전</button>
+        <button id="applyButton">색상 적용</button>
+        <button id="closeShop">닫기</button>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

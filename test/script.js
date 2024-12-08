@@ -10,8 +10,13 @@ const gameCards = Array.from(document.querySelectorAll('.game-card'));
 const game1 = document.getElementById('game1');
 const game2 = document.getElementById('game2');
 const game3 = document.getElementById('game3');
-const soundIcon = document.getElementById('soundIcon');
-const soundImage = document.getElementById('soundImage');
+
+const optionIcon = document.getElementById('optionIcon');
+const optionScreen = document.getElementById('optionScreen');
+const closeOption = document.getElementById('closeOption');
+const soundToggle = document.getElementById('soundToggle');
+const volumeSlider = document.getElementById('volume');
+
 const bulletcontainer = document.getElementById('bullet-container');
 const reactioncontainer = document.getElementById('reaction-container');
 const startButton = document.getElementById('start-button');
@@ -31,6 +36,14 @@ const bettingValueInput = document.getElementById('betting-value');
 const bettingHorseInput = document.getElementById('betting-horse');
 const placeBetButton = document.getElementById('place-bet');
 const startRaceButton = document.getElementById('start-race');
+
+const shopIcon = document.getElementById('shopIcon');
+const shopScreen = document.getElementById('shopScreen');
+const closeShop = document.getElementById('closeShop');
+const spinButton = document.getElementById('spinButton');
+const applyButton = document.getElementById('applyButton');
+const slots = [document.getElementById('slot1'), document.getElementById('slot2'), document.getElementById('slot3')];
+const moneyDisplay = document.getElementById('money');
 
 let currentIndex = 0;
 let soundOn = true;
@@ -71,33 +84,115 @@ carousel.addEventListener('wheel', (event) => {
   updateCarousel(); 
 });
 
-// 사운드 아이콘 클릭 시 사운드 on/off
-soundIcon.addEventListener('click', () => {
-    soundOn = !soundOn;
-    soundImage.src = soundOn ? 'https://img.icons8.com/ios/50/000000/high-volume--v1.png' : 'https://img.icons8.com/ios/50/000000/mute.png';
-});
-
 // 창 크기 조정 시 캐러셀 업데이트
 window.addEventListener('resize', updateCarousel);
 
-// 게임 1 클릭 시 게임 1 화면으로 전환
+// 게임 1 클릭 시 탄막 게임 화면으로 전환
 game1.addEventListener('click', () => {
     gameList.classList.add('hidden');
     bulletcontainer.classList.remove('hidden');
     gameLoop();
 });
 
-// 게임 2 클릭 시 게임 2 화면으로 전환
+// 게임 2 클릭 시 반응속도 게임 화면으로 전환
 game2.addEventListener('click', () => {
     gameList.classList.add('hidden');
     reactioncontainer.classList.remove('hidden');
 });
 
-// 게임 3 클릭 시 게임 3 화면으로 전환
+// 게임 3 클릭 시 경마 게임 화면으로 전환
 game3.addEventListener('click', () => {
     gameList.classList.add('hidden');
     bettingContainer.classList.remove('hidden');
 });
+
+// 옵션 화면 열기
+optionIcon.addEventListener('click', () => {
+    if (optionScreen.classList.contains('hidden'))
+        optionScreen.classList.remove('hidden');
+    else
+        optionScreen.classList.add('hidden');
+});
+
+// 옵션 화면 닫기
+closeOption.addEventListener('click', () => {
+    optionScreen.classList.add('hidden');
+});
+
+// 사운드 토글
+soundToggle.addEventListener('change', (e) => {
+    const soundOn = e.target.checked;
+    if (soundOn) {
+        // 사운드 켜기
+        console.log('Sound On');
+    } else {
+        // 사운드 끄기
+        console.log('Sound Off');
+    }
+});
+
+// 볼륨 조절
+volumeSlider.addEventListener('input', (e) => {
+    const volume = e.target.value;
+    // 볼륨 설정
+    console.log(`Volume: ${volume}`);
+});
+
+// 상점 화면 열기
+shopIcon.addEventListener('click', () => {
+    shopScreen.classList.remove('hidden');
+});
+
+// 상점 화면 닫기
+closeShop.addEventListener('click', () => {
+    shopScreen.classList.add('hidden');
+});
+
+// 슬롯머신 스핀
+spinButton.addEventListener('click', () => {
+    let money = parseInt(moneyDisplay.textContent, 10);
+    if (money < 2000) {
+        alert('돈이 부족합니다!');
+        return;
+    }
+
+    money -= 2000;
+    moneyDisplay.textContent = money;
+
+    const hexValues = [];
+    for (let i = 0; i < slots.length; i++) {
+        const randomValue = Math.floor(Math.random() * 256);
+        const hexValue = randomValue.toString(16).padStart(2, '0');
+        hexValues.push(hexValue);
+        slots[i].textContent = hexValue;
+    }
+
+    const finalColor = `#${hexValues.join('')}`;
+    slots.forEach(slot => {
+        slot.style.backgroundColor = finalColor;
+    });
+});
+
+// 슬롯머신 색상 적용
+applyButton.addEventListener('click', () => {
+    const hexValues = slots.map(slot => slot.textContent);
+    const finalColor = `#${hexValues.join('')}`;
+    applyColorToGame(finalColor);
+    shopScreen.classList.add('hidden');
+});
+
+// 색상 적용 함수
+function applyColorToGame(color) {
+    // 말이나 탄막 게임에 색상을 적용하는 로직을 추가하세요.
+    // 예시로 말의 색상을 변경하는 코드:
+    const horses = document.querySelectorAll('.horse');
+    horses.forEach((horse) => {
+        horse.style.backgroundColor = color;
+    });
+
+    // 탄막 게임의 플레이어 색상을 변경하는 코드:
+    player.color = color;
+}
 
 // 초기 말 생성
 function initHorses() {
