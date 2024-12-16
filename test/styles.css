@@ -1,18 +1,30 @@
 /* 기본 */
 :root {
-  --main-bg-color: #ffffff;
-  --main-text-color: #000000;
+  --main-bg-color: #000000; /* 검은색 배경 */
+  --main-text-color: #00FF00; /* 네오그린 텍스트 */
   --card-opacity: 0.5;
   --card-scale: 0.8;
   --card-active-scale: 1.3;
   --card-transition: 0.3s;
 }
 
+/* Light 테마 */
+:root.light-theme {
+  --main-bg-color: #FFFFFF; /* 흰색 배경 */
+  --main-text-color: #000000; /* 검은색 텍스트 */
+}
+
+/* Dark 테마 */
+:root.dark-theme {
+  --main-bg-color: #000000; /* 검은색 배경 */
+  --main-text-color: #00FF00; /* 네오그린 텍스트 */
+}
+
 /* 바디 */
 body {
   font-family: Arial, sans-serif;
   background-color: var(--main-bg-color);
-  color: black;
+  color: var(--main-text-color);
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -35,17 +47,19 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  background-color: rgba(255, 255, 255, 0.9); /* 배경색과 투명도 설정 */
+  background-color: rgba(0, 0, 0, 0.9); /* 배경색과 투명도 설정 */
 }
 
 #startScreen h1 {
   font-size: 3em;
   margin-bottom: 0.5em;
+  color: var(--main-text-color);
 }
 
 #startScreen p {
   font-size: 1.2em;
   opacity: 0.7;
+  color: var(--main-text-color);
 }
 
 /* 게임 선택 화면 */
@@ -79,6 +93,7 @@ body {
   flex-grow: 1;
   text-align: center;
   margin: 0;
+  color: var(--main-text-color);
 }
 
 #money-display {
@@ -97,7 +112,8 @@ body {
 
 #money-display img,
 #optionIcon img,
-#shopIcon img {
+#shopIcon img,
+#helpIcon img {
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -112,11 +128,34 @@ body {
   transform: translate(-50%, -50%);
   width: 300px;
   padding: 20px;
-  background-color: white;
+  background-color: #333; /* 어두운 배경 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   text-align: center;
   z-index: 1000;
+  color: var(--main-text-color);
+}
+
+.option-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.option-buttons button {
+  flex: 1;
+  margin: 0 5px;
+  padding: 10px;
+  background-color: var(--main-bg-color);
+  color: var(--main-text-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.option-buttons button:hover {
+  background-color: #00FF00; /* 호버 시 배경색 */
+  color: #000000; /* 호버 시 텍스트 색상 */
 }
 
 #optionScreen h2 {
@@ -125,6 +164,47 @@ body {
 
 .option {
   margin: 20px 0;
+}
+
+#helpScreen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  padding: 20px;
+  background-color: #333; /* 어두운 배경 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+  color: var(--main-text-color);
+}
+
+#helpScreen h2 {
+  margin-top: 0;
+}
+
+.help-content {
+  text-align: left;
+  margin: 20px 0;
+}
+
+.help-content h3 {
+  margin-bottom: 10px;
+}
+
+.help-content p,
+.help-content ul {
+  margin-bottom: 10px;
+}
+
+.help-content ul {
+  padding-left: 20px;
+}
+
+.help-content li {
+  margin-bottom: 5px;
 }
 
 .switch {
@@ -240,7 +320,7 @@ canvas {
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.8);
-  color: white;
+  color: var(--main-text-color);
   text-align: center;
 }
 
@@ -252,11 +332,14 @@ canvas {
   justify-content: center;
   text-align: center;
   height: 100vh; /* 화면 전체 높이 사용 */
+  background-color: var(--main-bg-color); /* 배경색 */
+  cursor: pointer; /* 클릭 가능 커서 */
 }
 
 #reaction-message {
   font-size: 24px;
   margin-bottom: 20px;
+  color: var(--main-text-color); /* 텍스트 색상 */
 }
 
 #reaction-target {
@@ -267,6 +350,7 @@ canvas {
 #reaction-speed {
   font-size: 20px;
   margin-top: 20px;
+  color: var(--main-text-color); /* 텍스트 색상 */
 }
 
 #reaction-button {
@@ -274,6 +358,7 @@ canvas {
   padding: 10px 20px;
   font-size: 18px;
   cursor: pointer;
+  color: var(--main-text-color); /* 텍스트 색상 */
 }
 
 /* 게임 베팅 화면 */
@@ -310,8 +395,8 @@ canvas {
   width: 90%;
   height: 300px;
   margin: 20px auto;
-  border: 2px solid black;
-  background-color: #f0f0f0;
+  border: 2px solid var(--main-text-color);
+  background-color: #333; /* 어두운 배경 */
   overflow: hidden;
 }
 
@@ -343,7 +428,7 @@ canvas {
   top: -20px;
   left: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  color: var(--main-bg-color);
+  color: var(--main-text-color);
   padding: 2px 5px;
   border-radius: 3px;
   font-size: 12px;
@@ -357,11 +442,12 @@ canvas {
   transform: translate(-50%, -50%);
   width: 300px;
   padding: 20px;
-  background-color: white;
+  background-color: #333; /* 어두운 배경 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   text-align: center;
   z-index: 1000;
+  color: var(--main-text-color);
 }
 
 #slotMachine {
@@ -380,4 +466,73 @@ canvas {
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   border-radius: 10px;
+}
+
+/* 기본 버튼 스타일 */
+button {
+  background-color: transparent; /* 배경색 제거 */
+  border: 2px solid #00FF00; /* 네오그린 테두리 */
+  color: #00FF00; /* 네오그린 텍스트 */
+  padding: 15px 32px; /* 패딩 */
+  text-align: center; /* 텍스트 정렬 */
+  text-decoration: none; /* 텍스트 장식 제거 */
+  display: inline-block; /* 인라인 블록 요소로 설정 */
+  font-size: 16px; /* 폰트 크기 */
+  margin: 4px 2px; /* 마진 */
+  cursor: pointer; /* 커서 모양 변경 */
+  border-radius: 12px; /* 둥근 모서리 */
+  transition: background-color 0.3s ease, color 0.3s ease; /* 배경색 및 텍스트 색상 전환 효과 */
+}
+
+/* 버튼 호버 효과 */
+button:hover {
+  background-color: #00FF00; /* 호버 시 배경색 */
+  color: #000000; /* 호버 시 텍스트 색상 */
+}
+
+/* 비활성화된 버튼 스타일 */
+button:disabled {
+  background-color: transparent; /* 배경색 제거 */
+  border: 2px solid #ccc; /* 비활성화 시 테두리 색상 */
+  color: #ccc; /* 비활성화 시 텍스트 색상 */
+  cursor: not-allowed; /* 커서 모양 변경 */
+}
+
+/* 알림 메시지 창 스타일 */
+#alertBox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background-color: #333; /* 어두운 배경 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1000;
+    color: var(--main-text-color);
+}
+
+#alertBox #alertMessage {
+    margin-bottom: 20px;
+}
+
+#alertBox #alertButton {
+    background-color: transparent; /* 배경색 제거 */
+    border: 2px solid #00FF00; /* 네오그린 테두리 */
+    color: #00FF00; /* 네오그린 텍스트 */
+    padding: 10px 20px; /* 패딩 */
+    text-align: center; /* 텍스트 정렬 */
+    text-decoration: none; /* 텍스트 장식 제거 */
+    display: inline-block; /* 인라인 블록 요소로 설정 */
+    font-size: 16px; /* 폰트 크기 */
+    cursor: pointer; /* 커서 모양 변경 */
+    border-radius: 12px; /* 둥근 모서리 */
+    transition: background-color 0.3s ease, color 0.3s ease; /* 배경색 및 텍스트 색상 전환 효과 */
+}
+
+#alertBox #alertButton:hover {
+    background-color: #00FF00; /* 호버 시 배경색 */
+    color: #000000; /* 호버 시 텍스트 색상 */
 }

@@ -45,6 +45,9 @@ const applyButton = document.getElementById('applyButton');
 const slots = [document.getElementById('slot1'), document.getElementById('slot2'), document.getElementById('slot3')];
 const moneyDisplay = document.getElementById('money');
 
+const themeToggle = document.getElementById('themeToggle');
+const rootElement = document.documentElement;
+
 let currentIndex = 0;
 let soundOn = true;
 let currentHorseIndex = 0;
@@ -52,6 +55,87 @@ let bettingAmount = 0;
 let selectedHorse = null;
 let totalRaces = 8;
 let isbetting = false;
+let appliedColor = '#FFFFFF'; // 기본 색상
+let themebg = 'black';
+
+// 반응속도 게임 관련 변수
+let reactionTimes = [];
+let startTime = 0;
+let round = 0;
+const totalRounds = 5;
+
+const messageEl = document.getElementById('reaction-message');
+const reactionContainer = document.getElementById('reaction-container');
+const resultEl = document.getElementById('reaction-speed');
+const actionButtonEl = document.getElementById('reaction-button');
+
+function showTarget() {
+  const delay = Math.random() * 2000 + 1000; // Random delay between 1-3 seconds
+  setTimeout(() => {
+    startTime = Date.now();
+    reactionContainer.style.backgroundColor = 'lightgrey'; // 화면 색상 변경
+    messageEl.textContent = 'Click!';
+  }, delay);
+}
+
+function startGame() {
+  reactionTimes = [];
+  round = 0;
+  resultEl.style.display = 'none';
+  actionButtonEl.style.display = 'none';
+  nextRound();
+}
+
+function nextRound() {
+  if (round < totalRounds) {
+    round++;
+    messageEl.textContent = `Round ${round}: Get ready...`;
+    reactionContainer.style.backgroundColor = themebg; // 기본 색상으로 변경
+    showTarget();
+  } else {
+    endGame();
+  }
+}
+
+function handleTargetClick() {
+  if (reactionContainer.style.backgroundColor === 'lightgrey') {
+    const reactionTime = Date.now() - startTime;
+    reactionTimes.push(reactionTime);
+    messageEl.textContent = `Reaction time: ${reactionTime} ms`;
+    reactionContainer.style.backgroundColor = themebg; // 기본 색상으로 변경
+    setTimeout(nextRound, 1000);
+  }
+}
+
+function endGame() {
+  const averageTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+  messageEl.textContent = `평균 반응 속도: ${averageTime.toFixed(2)} ms`;
+  if (averageTime < 270) {
+    money.textContent = parseInt(money.textContent) + 1000;
+    resultEl.textContent = `얻은 돈: 1000`;
+  } else {
+    money.textContent = parseInt(money.textContent) + 500;
+    resultEl.textContent = `얻은 돈: 500`;
+  }
+
+  resultEl.style.display = 'block';
+  actionButtonEl.style.display = 'block';
+}
+
+reactionContainer.addEventListener('click', handleTargetClick);
+actionButtonEl.addEventListener('click', () => {
+  startGame();
+  reactionContainer.classList.add('hidden');
+  gameList.classList.remove('hidden');
+});
+
+// 게임 시작 버튼 클릭 시 startGame() 실행
+document.getElementById('game2').addEventListener('click', () => {
+    gameList.classList.add('hidden');
+    reactionContainer.classList.remove('hidden');
+    messageEl.textContent = '로딩중...';
+    setTimeout(startGame, 3000); // 3초 후에 게임 시작
+  });
 
 // 스타트 화면 클릭 시 게임 목록 화면으로 전환
 startScreen.addEventListener('click', () => {
@@ -91,6 +175,7 @@ window.addEventListener('resize', updateCarousel);
 game1.addEventListener('click', () => {
     gameList.classList.add('hidden');
     bulletcontainer.classList.remove('hidden');
+    player.color = appliedColor; // 저장된 색상 적용
     gameLoop();
 });
 
@@ -104,14 +189,18 @@ game2.addEventListener('click', () => {
 game3.addEventListener('click', () => {
     gameList.classList.add('hidden');
     bettingContainer.classList.remove('hidden');
+    horses.forEach((horse) => {
+        if (parseInt(horse.dataset.number) === selectedHorse) {
+            horse.style.backgroundColor = appliedColor; // 저장된 색상 적용
+        } else {
+            horse.style.backgroundColor = 'brown'; // 기본 색상
+        }
+    });
 });
 
 // 옵션 화면 열기
 optionIcon.addEventListener('click', () => {
-    if (optionScreen.classList.contains('hidden'))
-        optionScreen.classList.remove('hidden');
-    else
-        optionScreen.classList.add('hidden');
+    optionScreen.classList.remove('hidden');
 });
 
 // 옵션 화면 닫기
@@ -119,23 +208,17 @@ closeOption.addEventListener('click', () => {
     optionScreen.classList.add('hidden');
 });
 
-// 사운드 토글
-soundToggle.addEventListener('change', (e) => {
-    const soundOn = e.target.checked;
-    if (soundOn) {
-        // 사운드 켜기
-        console.log('Sound On');
-    } else {
-        // 사운드 끄기
-        console.log('Sound Off');
-    }
-});
-
-// 볼륨 조절
-volumeSlider.addEventListener('input', (e) => {
-    const volume = e.target.value;
-    // 볼륨 설정
-    console.log(`Volume: ${volume}`);
+// 타이틀로 버튼 클릭 시 시작 화면으로 이동
+document.getElementById('titleButton').addEventListener('click', () => {
+    optionScreen.classList.add('hidden');
+    startScreen.classList.remove('hidden');
+    gameList.classList.add('hidden');
+    // 필요한 경우 다른 화면도 숨김 처리
+    document.getElementById('bullet-container').classList.add('hidden');
+    document.getElementById('reaction-container').classList.add('hidden');
+    document.getElementById('betting-container').classList.add('hidden');
+    document.getElementById('game-container').classList.add('hidden');
+    document.getElementById('shopScreen').classList.add('hidden');
 });
 
 // 상점 화면 열기
@@ -152,7 +235,7 @@ closeShop.addEventListener('click', () => {
 spinButton.addEventListener('click', () => {
     let money = parseInt(moneyDisplay.textContent, 10);
     if (money < 2000) {
-        alert('돈이 부족합니다!');
+        showAlert('돈이 부족합니다!');
         return;
     }
 
@@ -160,17 +243,29 @@ spinButton.addEventListener('click', () => {
     moneyDisplay.textContent = money;
 
     const hexValues = [];
-    for (let i = 0; i < slots.length; i++) {
-        const randomValue = Math.floor(Math.random() * 256);
-        const hexValue = randomValue.toString(16).padStart(2, '0');
-        hexValues.push(hexValue);
-        slots[i].textContent = hexValue;
-    }
+    const spinDuration = 2000; // 스핀 지속 시간 (밀리초)
+    const spinInterval = 100; // 색상 변경 간격 (밀리초)
+    let elapsedTime = 0;
 
-    const finalColor = `#${hexValues.join('')}`;
-    slots.forEach(slot => {
-        slot.style.backgroundColor = finalColor;
-    });
+    const spinAnimation = setInterval(() => {
+        for (let i = 0; i < slots.length; i++) {
+            const randomValue = Math.floor(Math.random() * 256);
+            const hexValue = randomValue.toString(16).padStart(2, '0');
+            hexValues[i] = hexValue;
+            slots[i].textContent = hexValue;
+        }
+
+        const currentColor = `#${hexValues.join('')}`;
+        slots.forEach(slot => {
+            slot.style.backgroundColor = currentColor;
+        });
+
+        elapsedTime += spinInterval;
+        if (elapsedTime >= spinDuration) {
+            clearInterval(spinAnimation);
+            applyColorToGame(currentColor);
+        }
+    }, spinInterval);
 });
 
 // 슬롯머신 색상 적용
@@ -183,14 +278,18 @@ applyButton.addEventListener('click', () => {
 
 // 색상 적용 함수
 function applyColorToGame(color) {
-    // 말이나 탄막 게임에 색상을 적용하는 로직을 추가하세요.
-    // 예시로 말의 색상을 변경하는 코드:
-    const horses = document.querySelectorAll('.horse');
+    appliedColor = color; // 색상 저장
+
+    // 베팅한 말의 색상을 변경하는 로직
     horses.forEach((horse) => {
-        horse.style.backgroundColor = color;
+        if (parseInt(horse.dataset.number) === selectedHorse) {
+            horse.style.backgroundColor = color;
+        } else {
+            horse.style.backgroundColor = 'brown'; // 기본 색상
+        }
     });
 
-    // 탄막 게임의 플레이어 색상을 변경하는 코드:
+    // 탄막 게임의 플레이어 색상을 변경하는 로직
     player.color = color;
 }
 
@@ -292,11 +391,11 @@ function showResults() {
     if (isbetting) {
         if (selectedHorse === parseInt(results[0].number)) {
             money.textContent = parseInt(money.textContent) + bettingAmount * (parseInt(horses[selectedHorse - 1].dataset.odds) - 1);
-            alert('축하합니다. 베팅에 성공하셨습니다.');
+            showAlert('축하합니다. 베팅에 성공하셨습니다.');
         } 
         else {
             money.textContent = parseInt(money.textContent) - bettingAmount;
-            alert('베팅 실패! 다음 기회에 도전하세요.');
+            showAlert('베팅 실패! 다음 기회에 도전하세요.');
         }
         isbetting = false;
     }
@@ -309,6 +408,13 @@ function showResults() {
         horse.dataset.winningRate = calculateWinningRate(horse.dataset.winning, totalRaces);
         horse.dataset.odds = calculateOdds(horse.dataset.winningRate);
     });
+
+    // 모든 말의 색상을 기본 색상으로 되돌림
+    horses.forEach((horse) => {
+        horse.style.backgroundColor = 'brown'; // 기본 색상
+    });
+
+    resultsScreen.classList.remove('hidden');
 }
 
 // 게임 초기화
@@ -326,7 +432,7 @@ function resetGame() {
 function displayHorseInfo(index) {
     const horse = horses[index];
     horseNumber.textContent = `${horse.dataset.number}번마`; // 말 번호 표시
-    horseImage.src = 'https://via.placeholder.com/100'; // 임시 이미지
+    horseImage.src = `horse${horse.dataset.number}.jpeg`; // 말 이미지 설정
     horseStrategy.textContent = `전략: ${horse.dataset.strategy}`;
     horseOdds.textContent = `배당률: ${horse.dataset.odds}`;
     horseWinningRate.textContent = `승률: ${horse.dataset.winningRate}%`;
@@ -346,18 +452,40 @@ nextHorseButton.addEventListener('click', () => {
 
 // 베팅 버튼 클릭 이벤트
 placeBetButton.addEventListener('click', () => {
-    bettingAmount = parseInt(bettingValueInput.value);
-    selectedHorse = parseInt(bettingHorseInput.value);
-    if (isNaN(bettingAmount) || isNaN(selectedHorse) || bettingAmount <= 0 || parseInt(money.textContent)<bettingAmount || selectedHorse < 1 || selectedHorse > 8) {
-        alert('베팅 금액과 말 번호를 올바르게 입력 해주세요.');
+    const bettingValue = parseInt(bettingValueInput.value, 10);
+    const bettingHorse = parseInt(bettingHorseInput.value, 10);
+
+    if (isNaN(bettingValue) || isNaN(bettingHorse) || bettingValue <= 0 || bettingHorse < 1 || bettingHorse > horses.length) {
+        showAlert('유효한 베팅 금액과 말 번호를 입력하세요.');
         return;
     }
-    alert(`베팅 완료: ${bettingAmount}원, ${selectedHorse}번 말`);
+
+    if (bettingValue > parseInt(money.textContent, 10)) {
+        showAlert('돈이 부족합니다.');
+        return;
+    }
+
+    selectedHorse = bettingHorse;
+    bettingAmount = bettingValue;
     isbetting = true;
+
+    // 베팅한 말의 색상을 변경
+    horses.forEach((horse) => {
+        if (parseInt(horse.dataset.number) === selectedHorse) {
+            horse.style.backgroundColor = appliedColor; // 저장된 색상 적용
+        }
+    });
+
+    showAlert(`말 번호 ${selectedHorse}에 ${bettingAmount}원을 베팅했습니다.`);
 });
 
 // 경기 시작 버튼 클릭 이벤트
 startRaceButton.addEventListener('click', () => {
+    if (!isbetting) {
+        showAlert('먼저 베팅을 해주세요.');
+        return;
+    }
+
     bettingContainer.classList.add('hidden');
     gameContainer.classList.remove('hidden');
     moveHorses();
@@ -482,21 +610,22 @@ restartbutton.addEventListener('click', () => {
     gameList.classList.remove('hidden');
 });
 
-let reactionTimes = [];
-let startTime = 0;
-let round = 0;
-const totalRounds = 5;
+// 게임 재시작
+restartButton.addEventListener('click', () => {
+    gameOverScreen.classList.add('hidden');
+    enemies = [];
+    isGameOver = false;
+    score = 0;
 
-const messageEl = document.getElementById('reaction-message');
-const targetImageEl = document.getElementById('reaction-target');
-const resultEl = document.getElementById('reaction-speed');
-const actionButtonEl = document.getElementById('reaction-button');
+    bulletcontainer.classList.add('hidden');
+    gameList.classList.remove('hidden');
+});
 
 function showTarget() {
   const delay = Math.random() * 2000 + 1000; // Random delay between 1-3 seconds
   setTimeout(() => {
     startTime = Date.now();
-    targetImageEl.style.display = 'block';
+    reactionContainer.style.backgroundColor = 'lightgrey'; // 화면 색상 변경
     messageEl.textContent = 'Click!';
   }, delay);
 }
@@ -513,7 +642,7 @@ function nextRound() {
   if (round < totalRounds) {
     round++;
     messageEl.textContent = `Round ${round}: Get ready...`;
-    targetImageEl.style.display = 'none';
+    reactionContainer.style.backgroundColor = themebg; // 기본 색상으로 변경
     showTarget();
   } else {
     endGame();
@@ -521,35 +650,97 @@ function nextRound() {
 }
 
 function handleTargetClick() {
-  const reactionTime = Date.now() - startTime;
-  reactionTimes.push(reactionTime);
-  messageEl.textContent = `Reaction time: ${reactionTime} ms`;
-  targetImageEl.style.display = 'none';
-  setTimeout(nextRound, 1000);
+  if (reactionContainer.style.backgroundColor === 'lightgrey') {
+    const reactionTime = Date.now() - startTime;
+    reactionTimes.push(reactionTime);
+    messageEl.textContent = `Reaction time: ${reactionTime} ms`;
+    reactionContainer.style.backgroundColor = themebg; // 기본 색상으로 변경
+    setTimeout(nextRound, 1000);
+  }
 }
 
 function endGame() {
-  const averageTime =
-    reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+  const averageTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
   messageEl.textContent = `평균 반응 속도: ${averageTime.toFixed(2)} ms`;
   if (averageTime < 270) {
-        money.textContent = parseInt(money.textContent) + 1000;
-        resultEl.textContent = `얻은 돈: 500`;
-    } else {
-        money.textContent = parseInt(money.textContent) + 500;
-        resultEl.textContent = `얻은 돈: 500`;
-    }
+    money.textContent = parseInt(money.textContent) + 1000;
+    resultEl.textContent = `얻은 돈: 1000`;
+  } else {
+    money.textContent = parseInt(money.textContent) + 500;
+    resultEl.textContent = `얻은 돈: 500`;
+  }
 
   resultEl.style.display = 'block';
   actionButtonEl.style.display = 'block';
 }
 
-targetImageEl.addEventListener('click', handleTargetClick);
+reactionContainer.addEventListener('click', handleTargetClick);
 actionButtonEl.addEventListener('click', () => {
-    startGame();
-    reactioncontainer.classList.add('hidden');
-    gameList.classList.remove('hidden');
-    });
-    
+  startGame();
+  reactionContainer.classList.add('hidden');
+  gameList.classList.remove('hidden');
+});
 
-startGame();
+// 사용자 정의 알림 메시지 창 제어 함수
+function showAlert(message) {
+    const alertBox = document.getElementById('alertBox');
+    const alertMessage = document.getElementById('alertMessage');
+    const alertButton = document.getElementById('alertButton');
+
+    alertMessage.textContent = message;
+    alertBox.classList.remove('hidden');
+
+    alertButton.onclick = () => {
+        alertBox.classList.add('hidden');
+    };
+}
+
+// 기존 alert 함수 대체
+function alert(message) {
+    showAlert(message);
+}
+
+// 옵션 메뉴 토글 함수
+function toggleOptionMenu() {
+    if (optionScreen.classList.contains('hidden')) {
+        optionScreen.classList.remove('hidden');
+    } else {
+        optionScreen.classList.add('hidden');
+    }
+}
+
+// ESC 키 이벤트 리스너 추가
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        toggleOptionMenu();
+    }
+});
+
+themeToggle.addEventListener('click', () => {
+    if (rootElement.classList.contains('light-theme')) {
+        rootElement.classList.remove('light-theme');
+        rootElement.classList.add('dark-theme');
+        themeToggle.textContent = 'Light';
+        themebg = 'black';
+        shopIcon.querySelector('img').src = '상점_dark.png'; // dark 모드 이미지
+    } else {
+        rootElement.classList.remove('dark-theme');
+        rootElement.classList.add('light-theme');
+        themeToggle.textContent = 'Dark';
+        themebg = 'white';
+        shopIcon.querySelector('img').src = '상점_light.png'; // light 모드 이미지
+    }
+});
+
+// 초기 테마 설정
+rootElement.classList.add('dark-theme');
+
+// 도움말 화면 열기
+document.getElementById('helpIcon').addEventListener('click', () => {
+    document.getElementById('helpScreen').classList.remove('hidden');
+});
+
+// 도움말 화면 닫기
+document.getElementById('closeHelp').addEventListener('click', () => {
+    document.getElementById('helpScreen').classList.add('hidden');
+});

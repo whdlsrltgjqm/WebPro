@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>경마 게임</title>
+    <title>Getting Money Simulator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -23,29 +23,17 @@
             </div>
             <h1>게임 선택</h1>
 
+            <div id="helpIcon"> <!-- 도움말 버튼 -->
+                <img src="help.png" alt="Help Icon">
+            </div>
+
             <div id="optionIcon"> <!-- 옵션 버튼 -->
                 <img src="옵션.png" alt="Option Icon">
             </div>
             
             <div id="shopIcon"> <!-- 상점 버튼 -->
-                <img src="상점.png" alt="Shop Icon">
+                <img src="상점_dark.png" alt="Shop Icon">
             </div>
-        </div>
-
-        <div id="optionScreen" class="hidden"> <!-- 사운드 관련 화면 -->
-            <h2>사운드 설정</h2>
-            <div class="option"> <!-- 사운드 on/off -->
-                <p>사운드</p>
-                <label class="switch">
-                    <input type="checkbox" id="soundToggle">
-                    <span class="slider round"></span>
-                </label>
-            </div>
-            <div class="option"> <!-- 사운드 볼륨 -->
-                <p>볼륨</p>
-                <input type="range" id="volume" min="0" max="100">
-            </div>
-            <button id="closeOption">닫기</button>
         </div>
 
         <!-- 게임 선택 카드 -->
@@ -55,7 +43,7 @@
                 <h2>탄막 게임</h2>
             </div>
             <div id="game2" class="game-card"> <!-- 게임 2 -->
-                <img src="https://via.placeholder.com/150" alt="Placeholder image for Game 2">
+                <img src="반속대문.png" alt="Placeholder image for Game 2">
                 <h2>반응속도 게임</h2>
             </div>
             <div id="game3" class="game-card"> <!-- 게임 3 -->
@@ -63,6 +51,34 @@
                 <h2>경마 게임</h2>
             </div>
         </div>
+    </div>
+
+    <!-- 옵션 화면 -->
+    <div id="optionScreen" class="hidden"> <!-- 사운드 관련 화면 -->
+        <h2>설정</h2>
+        <div class="option">
+            <p>테마</p>
+            <button id="themeToggle">Light</button>
+        </div>
+        <button id="titleButton">타이틀로</button>
+        <button id="closeOption">닫기</button>
+    </div>
+
+    <!-- 도움말 화면 -->
+    <div id="helpScreen" class="hidden">
+        <h2>도움말</h2>
+        <div class="help-content">
+            <h3>게임 소개</h3>
+            <p>Getting Money Simulator는 다양한 미니 게임을 통해 돈을 벌 수 있는 게임입니다. esc키로 설정을 열 수 있습니다.</p>
+            <h3>조작법</h3>
+            <p>각 게임의 조작법은 다음과 같습니다:</p>
+            <ul>
+                <li><strong>탄막 게임:</strong> 화살표 키로 이동하고 적을 피하세요.</li>
+                <li><strong>반응속도 게임:</strong> 화면이 회색으로 변하면 클릭하세요.</li>
+                <li><strong>경마 게임:</strong> 말에 베팅하고 경주를 지켜보세요.</li>
+            </ul>
+        </div>
+        <button id="closeHelp">닫기</button>
     </div>
 
     <!-- 탄막게임 화면 -->
@@ -77,7 +93,7 @@
 
     <!-- 반응속도 게임 화면 -->
     <div id="reaction-container" class="hidden">
-        <div id="reaction-message">임시 준비</div>
+        <div id="reaction-message">로딩중</div>
         <img id="reaction-target" src="target.png" alt="Target" style="display: none;">
         <div id="reaction-speed" style="display: none;"></div>
         <button id="reaction-button" style="display: none;">Play Again</button>
@@ -130,6 +146,12 @@
         <button id="spinButton">회전</button>
         <button id="applyButton">색상 적용</button>
         <button id="closeShop">닫기</button>
+    </div>
+
+    <!-- 알림 메시지 창 -->
+    <div id="alertBox" class="hidden">
+        <div id="alertMessage"></div>
+        <button id="alertButton">확인</button>
     </div>
 
     <script src="script.js"></script>
